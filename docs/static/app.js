@@ -75,6 +75,7 @@ function legend() {
 }
 
 function draw(reading) {
+  if (paused) return;
   const label = new Date(reading.timestamp || Date.now()).toLocaleTimeString("id-ID", { minute: "2-digit", second: "2-digit" });
   [chart, expandedChart].forEach(c => {
     if (!c) return;
@@ -151,7 +152,6 @@ async function serialLoop(port) {
         const timestamp = new Date().toISOString();
         const reading = { timestamp, values };
         
-        // Simpan data untuk ekspor CSV
         accumulatedData.push({
           No: accumulatedData.length + 1,
           Timestamp: timestamp,
@@ -329,12 +329,13 @@ function exportCSV() {
 }
 
 function setTheme(theme) {
-  document.documentElement.dataset.theme = theme;
+  document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("ekDataReaderTheme", theme);
 }
 
-function setUiTheme(theme){
-  document.documentElement.setAttribute("data-ui-theme",theme);localStorage.setItem("ekDataReaderUiTheme",theme)
+function setUiTheme(theme) {
+  document.documentElement.setAttribute("data-ui-theme", theme);
+  localStorage.setItem("ekDataReaderUiTheme", theme);
 }
 
 function unlock() {
@@ -415,9 +416,17 @@ $("aboutButton").addEventListener("click", () => $("aboutModal").classList.remov
 $("aboutClose").addEventListener("click", () => $("aboutModal").classList.add("hidden"));
 
 $("appearanceButton")?.addEventListener("click", () => $("appearancePopover")?.classList.toggle("hidden"));
+$("appearanceClose")?.addEventListener("click", () => $("appearancePopover")?.classList.add("hidden"));
 $("darkModeButton")?.addEventListener("click", () => setTheme("dark"));
 $("lightModeButton")?.addEventListener("click", () => setTheme("light"));
-$("themeOptionGrid")?.addEventListener("click",e=>{const btn=e.target.closest("[data-ui-theme-option]");if(btn)setUiTheme(btn.getAttribute("data-ui-theme-option"))});
+
+$("themeOptionGrid")?.addEventListener("click", e => {
+  const option = e.target.closest("[data-ui-theme-option]");
+  if (option) {
+    setUiTheme(option.getAttribute("data-ui-theme-option"));
+    $("appearancePopover")?.classList.add("hidden");
+  }
+});
 
 ["injectionSeconds", "arrayCount"].forEach(id => $(id)?.addEventListener("input", settings));
 $("sampleName")?.addEventListener("input", updateFileNamePreview);
