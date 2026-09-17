@@ -130,7 +130,9 @@ function runProgressTimer(durationSeconds) {
       const elapsed = Math.min((Date.now() - startedAt) / 1000, durationSeconds);
       const percent = Math.min((elapsed / durationSeconds) * 100, 100);
       const seconds = Math.floor(elapsed);
-      if (timerText) timerText.textContent = `00:${String(seconds).padStart(2, "0")}`;
+      const minutes = String(Math.floor(seconds / 60)).padStart(2, "0");
+      const remainder = String(seconds % 60).padStart(2, "0");
+      if (timerText) timerText.textContent = `${minutes}:${remainder}`;
       if (progressBar) progressBar.style.width = `${percent}%`;
       if (!processRunning || elapsed >= durationSeconds) {
         clearInterval(processTimer);
@@ -163,9 +165,11 @@ function resetProgress() {
 function parseLine(line) {
   const values = String(line).trim().split(/[;,\t ]+/).map(Number);
   if (!values.length || values.some(v => !Number.isFinite(v))) return null;
-  const schema = values.length === 8 ? ["S1", "S2", "S3", "S4", "S5", "S6", "Temp", "Hum"] :
-                 values.length === 12 ? ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "Temp", "Hum"] : null;
-  if (!schema) return null;
+  const schema = values.length === 8
+    ? ["S1", "S2", "S3", "S4", "S5", "S6", "Temp", "Hum"]
+    : values.length === 12
+      ? ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "Temp", "Hum"]
+      : values.map((_, index) => index < values.length - 2 ? `S${index + 1}` : index === values.length - 2 ? "Temp" : "Hum");
   const data = {};
   schema.forEach((key, i) => data[key] = values[i]);
   return data;
@@ -302,20 +306,25 @@ async function start(cycles = 1) {
   controls();
   phase = "01 INJECTION";
   processPhase(phase);
-  $("cycleCounter").textContent = `0 / ${cycles}`;
-  $("sampleTargetText").textContent = `0 / ${Math.round(value.injection * 4 * cycles)} samples`;
-  $("phaseProgress").style.width = "0%";
+  const targetSamples = Math.round(value.injection * APP.SAMPLE_RATE_HZ * cycles);
+  $("cycleCounter").textContent = `1 / ${cycles}`;
+  $("sampleTargetText").textContent = `0 / ${targetSamples} samples`;
   notice(cycles > 1 ? `Array sampling started · ${cycles} cycles.` : "Sampling started.", "success");
-  await send("S");
-  const duration = value.injection * cycles * 1000;
-  setTimeout(async () => {
-    if (!processRunning) return;
-    await send("Q");
+  try {
+    await send("S");
+    await runProgressTimer(value.injection * cycles);
+    if (processRunning) {
+      await send("Q");
+      notice("Sampling completed.", "success");
+    }
+  } catch (error) {
+    notice(`Sampling failed: ${error.message}`, "error");
+  } finally {
     processRunning = false;
     processPhase("READY");
+    resetProgress();
     controls();
-    notice("Sampling completed.", "success");
-  }, duration);
+  }
 }
 
 function clearData() {
@@ -343,13 +352,11 @@ function exportCSV() {
   }
 
   const keys = Object.keys(accumulatedData[0]);
-  const csvRows = [keys.join(",")];
+  const formatCell = value => `"${String(value ?? "").replace(/"/g, '""')}"`;
+  const csvRows = [keys.map(formatCell).join(",")];
 
   for (const row of accumulatedData) {
-    const values = keys.map(key => {
-      const val = row[key];
-      return typeof val === "string" ? `"${val}"` : val;
-    });
+    const values = keys.map(key => formatCell(row[key]));
     csvRows.push(values.join(","));
   }
 
@@ -369,6 +376,7 @@ function exportCSV() {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
 
   notice(`Data berhasil diekspor ke ${filename}`, "success");
 }
