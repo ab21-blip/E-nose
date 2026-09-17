@@ -333,9 +333,8 @@ function setTheme(theme) {
   localStorage.setItem("ekDataReaderTheme", theme);
 }
 
-function setUiTheme(theme) {
-  document.documentElement.dataset.uiTheme = theme;
-  localStorage.setItem("ekDataReaderUiTheme", theme);
+function setUiTheme(theme){
+  document.documentElement.setAttribute("data-ui-theme",theme);localStorage.setItem("ekDataReaderUiTheme",theme)
 }
 
 function unlock() {
@@ -418,10 +417,7 @@ $("aboutClose").addEventListener("click", () => $("aboutModal").classList.add("h
 $("appearanceButton")?.addEventListener("click", () => $("appearancePopover")?.classList.toggle("hidden"));
 $("darkModeButton")?.addEventListener("click", () => setTheme("dark"));
 $("lightModeButton")?.addEventListener("click", () => setTheme("light"));
-$("themeOptionGrid")?.addEventListener("click", e => {
-  const option = e.target.closest("[data-ui-theme-option]");
-  if (option) setUiTheme(option.dataset.uiThemeOption);
-});
+$("themeOptionGrid")?.addEventListener("click",e=>{const btn=e.target.closest("[data-ui-theme-option]");if(btn)setUiTheme(btn.getAttribute("data-ui-theme-option"))});
 
 ["injectionSeconds", "arrayCount"].forEach(id => $(id)?.addEventListener("input", settings));
 $("sampleName")?.addEventListener("input", updateFileNamePreview);
