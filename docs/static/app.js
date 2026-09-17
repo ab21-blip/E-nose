@@ -408,7 +408,15 @@ $("adaptiveYToggle").addEventListener("change", e => {
 
 $("expandChartButton").addEventListener("click", () => {
   $("chartModal").classList.remove("hidden");
-  expandedChart ??= makeChart($("expandedSensorChart"));
+
+  // Beri sedikit jeda agar DOM modal selesai dirender sebelum chart dibuat/di-resize
+  setTimeout(() => {
+    if (!expandedChart) {
+      expandedChart = makeChart($("expandedSensorChart"));
+    }
+    expandedChart.resize();
+    expandedChart.update();
+  }, 50);
 });
 
 $("closeChartModal").addEventListener("click", () => $("chartModal").classList.add("hidden"));
