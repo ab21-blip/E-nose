@@ -19,6 +19,7 @@ let serialPort = null, serialReader = null, serialWriter = null;
 let connected = false, serialReady = false, processRunning = false;
 let accumulatedData = [];
 let rowNo = 0, phase = "READY";
+let processTimer = null, processTimerResolve = null;
 
 function timeNow() {
   return new Date().toLocaleTimeString("id-ID", { hour12: false });
@@ -119,6 +120,46 @@ function processPhase(next) {
   if (map[next]) $(map[next]).classList.add("active");
 }
 
+function runProgressTimer(durationSeconds) {
+  return new Promise(resolve => {
+    const progressBar = $("phaseProgress");
+    const timerText = $("timerText");
+    const startedAt = Date.now();
+
+    const update = () => {
+      const elapsed = Math.min((Date.now() - startedAt) / 1000, durationSeconds);
+      const percent = Math.min((elapsed / durationSeconds) * 100, 100);
+      const seconds = Math.floor(elapsed);
+      if (timerText) timerText.textContent = `00:${String(seconds).padStart(2, "0")}`;
+      if (progressBar) progressBar.style.width = `${percent}%`;
+      if (!processRunning || elapsed >= durationSeconds) {
+        clearInterval(processTimer);
+        processTimer = null;
+        processTimerResolve = null;
+        resolve();
+      }
+    };
+
+    update();
+    processTimerResolve = resolve;
+    processTimer = setInterval(update, 250);
+  });
+}
+
+function resetProgress() {
+  if (processTimer) {
+    clearInterval(processTimer);
+    processTimer = null;
+  }
+  if (processTimerResolve) {
+    processTimerResolve();
+    processTimerResolve = null;
+  }
+  $("phaseProgress").style.width = "0%";
+  $("timerText").textContent = "00:00";
+  $("sampleTargetText").textContent = "0 / 0 samples";
+}
+
 function parseLine(line) {
   const values = String(line).trim().split(/[;,\t ]+/).map(Number);
   if (!values.length || values.some(v => !Number.isFinite(v))) return null;
@@ -215,6 +256,7 @@ async function disconnect() {
   connected = false;
   serialReady = false;
   processRunning = false;
+  resetProgress();
   try { await serialReader?.cancel(); } catch (_) {}
   try { serialReader?.releaseLock(); } catch (_) {}
   try { serialWriter?.releaseLock(); } catch (_) {}
@@ -260,6 +302,9 @@ async function start(cycles = 1) {
   controls();
   phase = "01 INJECTION";
   processPhase(phase);
+  $("cycleCounter").textContent = `0 / ${cycles}`;
+  $("sampleTargetText").textContent = `0 / ${Math.round(value.injection * 4 * cycles)} samples`;
+  $("phaseProgress").style.width = "0%";
   notice(cycles > 1 ? `Array sampling started · ${cycles} cycles.` : "Sampling started.", "success");
   await send("S");
   const duration = value.injection * cycles * 1000;
@@ -365,19 +410,41 @@ $("logoutButton").addEventListener("click", () => {
 });
 
 $("connectButton").addEventListener("click", connect);
+if ("serial" in navigator) {
+  navigator.serial.addEventListener("disconnect", event => {
+    if (event.target === serialPort) {
+      notice("Perangkat serial terputus.", "error");
+      void disconnect();
+    }
+  });
+}
 $("samplingButton").addEventListener("click", () => start(1));
 $("arrayButton").addEventListener("click", () => start(Number($("arrayCount").value) || 1));
 $("cleanButton").addEventListener("click", async () => {
-  if (!connected) return;
+  if (!connected || !serialReady || processRunning) return;
   processRunning = true;
   controls();
-  processPhase("READY");
-  await send("W");
-  notice("Sensor cleaning started.", "success");
+  processPhase("CLEANING");
+  $("cycleCounter").textContent = "0 / 1";
+  $("sampleTargetText").textContent = "Cleaning · 10 seconds";
+  try {
+    await send("W");
+    notice("Sensor cleaning started.", "success");
+    await runProgressTimer(10);
+    if (processRunning) notice("Sensor cleaning completed.", "success");
+  } catch (error) {
+    notice(`Cleaning failed: ${error.message}`, "error");
+  } finally {
+    processRunning = false;
+    processPhase("READY");
+    resetProgress();
+    controls();
+  }
 });
 
 $("stopButton").addEventListener("click", async () => {
   await send("Q");
+  resetProgress();
   processRunning = false;
   processPhase("READY");
   controls();
