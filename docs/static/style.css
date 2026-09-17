@@ -148,6 +148,34 @@ button:disabled, .action-card:disabled {opacity:0.4 !important;cursor:not-allowe
 .login-foot{margin-top:50px;color:var(--muted);font-size:10px}
 .modal{position:fixed;inset:0;display:grid;place-items:center;background:#0009;z-index:5}
 .modal-panel{position:relative;width:min(540px,calc(100% - 30px));padding:30px;border:1px solid var(--lime);background:var(--panel);line-height:1.7}
+.chart-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 999;
+  padding: 20px;
+}
+
+.chart-modal-panel {
+  width: min(1100px, 95vw);
+  max-height: 90vh;
+  background: var(--panel);
+  border: 1px solid var(--lime);
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.expanded-chart-wrapper {
+  position: relative;
+  flex: 1;
+  min-height: 400px;
+  width: 100%;
+}
 .modal-panel>button{position:absolute;right:12px;top:8px;border:0;background:transparent;color:var(--text);font-size:20px}
 .chart-modal-panel{width:min(1100px,calc(100% - 30px))}
 .chart-modal-panel canvas{height:500px!important;width:100%!important}
