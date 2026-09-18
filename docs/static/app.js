@@ -10,7 +10,7 @@ const APP = {
 };
 
 const names = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "Temp", "Hum"];
-const colors = ["#2563EB", "#DC2626", "#F59E0B", "#7C3AED", "#06B6D4", "#EC4899", "#16A34A", "#EA580C"];
+const colors = ["#38BDF8", "#FB7185", "#FACC15", "#C084FC", "#2DD4BF", "#F472B6", "#4ADE80", "#FB923C", "#818CF8", "#A3E635", "#E879F9", "#22D3EE"];
 
 const $ = id => document.getElementById(id);
 
@@ -23,6 +23,12 @@ let processTimer = null, processTimerResolve = null;
 
 function timeNow() {
   return new Date().toLocaleTimeString("id-ID", { hour12: false });
+}
+
+function formatTimestamp(value) {
+  const date = new Date(value);
+  const pad = number => String(number).padStart(2, "0");
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}.${String(date.getMilliseconds()).padStart(3, "0")}`;
 }
 
 function startHeaderClock() {
@@ -59,6 +65,30 @@ function notice(message, type = "info") {
       type === "success" ? "✓" : type === "error" ? "×" : type === "warning" ? "!" : "i"
     );
   }
+  const toastRegion = $("toastRegion");
+  if (toastRegion) {
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    toastRegion.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add("visible"));
+    setTimeout(() => {
+      toast.classList.remove("visible");
+      setTimeout(() => toast.remove(), 250);
+    }, 3500);
+  }
+}
+
+function updateConnectionIndicator(isOnline) {
+  [$("connectionLamp"), $("headerConnectionLamp")].forEach(indicator => {
+    if (!indicator) return;
+    indicator.classList.toggle("online", isOnline);
+    indicator.classList.toggle("offline", !isOnline);
+    indicator.setAttribute("aria-label", isOnline ? "Serial terhubung" : "Serial tidak terhubung");
+    indicator.title = isOnline ? "Serial terhubung" : "Serial tidak terhubung";
+  });
+  const status = $("headerConnectionStatus");
+  if (status) status.querySelector("span").textContent = isOnline ? "ONLINE" : "OFFLINE";
 }
 
 function makeChart(canvas) {
@@ -92,11 +122,12 @@ function makeChart(canvas) {
 }
 
 function legend() {
-  if ($("chartLegend")) {
-    $("chartLegend").innerHTML = names
-      .map((n, i) => `<span class="legend-item"><i class="legend-color" style="background:${colors[i % colors.length]}"></i>${n}</span>`)
-      .join("");
-  }
+  const markup = names
+    .map((n, i) => `<span class="legend-item"><i class="legend-color" style="background:${colors[i % colors.length]}"></i>${n}</span>`)
+    .join("");
+  [$("chartLegend"), $("expandedChartLegend")].forEach(element => {
+    if (element) element.innerHTML = markup;
+  });
 }
 
 function draw(reading) {
@@ -120,15 +151,17 @@ function table(reading) {
   if (rowNo === 1) body.innerHTML = "";
   const cells = names.map(n => `${n}: ${Number(reading.values[n] || 0).toFixed(3)} V`).join(" | ");
   const tr = document.createElement("tr");
-  tr.innerHTML = `<td>${rowNo}</td><td>${new Date(reading.timestamp || Date.now()).toLocaleTimeString("id-ID")}</td><td>${phase}</td><td>${cells}</td>`;
-  body.prepend(tr);
+  tr.innerHTML = `<td>${rowNo}</td><td>${formatTimestamp(reading.timestamp || Date.now())}</td><td>${phase}</td><td>${cells}</td>`;
+  body.appendChild(tr);
   while (body.children.length > 5) body.lastElementChild.remove();
+  body.parentElement.scrollTop = body.parentElement.scrollHeight;
 }
 
 function controls() {
   const ready = connected && serialReady && !processRunning;
   ["samplingButton", "arrayButton", "cleanButton"].forEach(id => $(id).disabled = !ready);
   $("stopButton").disabled = !processRunning;
+  $("connectButton").disabled = processRunning;
   $("connectButton").textContent = connected ? "DISCONNECT" : "CONNECT";
   $("connectButton").classList.toggle("disconnect", connected);
   $("exportButton").disabled = accumulatedData.length === 0;
@@ -257,6 +290,7 @@ async function connect() {
     await serialPort.open({ baudRate: APP.BAUD_RATE, dataBits: 8, stopBits: 1, parity: "none", flowControl: "none" });
     connected = true;
     serialReady = false;
+    updateConnectionIndicator(true);
     $("connectionLamp").classList.add("online");
     $("connectionLamp").classList.remove("offline");
     $("deviceName").textContent = "CH340 / CH341 / FTDI SERIAL";
@@ -292,6 +326,7 @@ async function disconnect() {
   serialReader = null;
   serialWriter = null;
   serialPort = null;
+  updateConnectionIndicator(false);
   $("connectionLamp").classList.remove("online");
   $("connectionLamp").classList.add("offline");
   $("deviceName").textContent = "SERIAL DEVICE NOT CONNECTED";
@@ -355,6 +390,7 @@ async function start(cycles = 1) {
 }
 
 function clearData() {
+  if (accumulatedData.length > 0 && !window.confirm("Hapus seluruh data yang sudah direkam?")) return;
   rowNo = 0;
   accumulatedData = [];
   $("exportButton").disabled = true;
@@ -527,6 +563,9 @@ $("expandChartButton").addEventListener("click", () => {
 });
 
 $("closeChartModal").addEventListener("click", () => $("chartModal").classList.add("hidden"));
+$("chartModal").addEventListener("click", event => {
+  if (event.target === $("chartModal")) $("chartModal").classList.add("hidden");
+});
 $("aboutButton").addEventListener("click", () => $("aboutModal").classList.remove("hidden"));
 $("aboutClose").addEventListener("click", () => $("aboutModal").classList.add("hidden"));
 
@@ -547,6 +586,7 @@ $("themeOptionGrid")?.addEventListener("click", e => {
 $("sampleName")?.addEventListener("input", updateFileNamePreview);
 
 window.addEventListener("DOMContentLoaded", () => {
+  updateConnectionIndicator(false);
   startHeaderClock();
   chart = makeChart($("sensorChart"));
   legend();
