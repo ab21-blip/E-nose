@@ -558,6 +558,9 @@ $("chartModal").addEventListener("click", event => {
 });
 $("aboutButton").addEventListener("click", () => $("aboutModal").classList.remove("hidden"));
 $("aboutClose").addEventListener("click", () => $("aboutModal").classList.add("hidden"));
+$("aboutModal").addEventListener("click", event => {
+  if (event.target === $("aboutModal")) $("aboutModal").classList.add("hidden");
+});
 
 ["injectionSeconds", "arrayCount"].forEach(id => $(id)?.addEventListener("input", settings));
 $("sampleName")?.addEventListener("input", updateFileNamePreview);
