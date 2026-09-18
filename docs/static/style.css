@@ -88,8 +88,11 @@ button:disabled, .action-card:disabled {opacity:0.4 !important;cursor:not-allowe
 .app-header{padding:14px 24px;background:var(--panel);border-bottom:1px solid var(--line);align-items:center}
 .app-header h2{margin:8px 0 0;font:700 23px Manrope,Arial,sans-serif}
 .header-right,.card-buttons{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.current-notification{display:grid;gap:3px;padding:8px 12px;border-left:2px solid var(--lime);background:var(--panel)}
+.current-notification,.notification-box{display:flex;align-items:center;gap:10px;line-height:1.4;padding:8px 12px;border-left:2px solid var(--lime);background:var(--panel)}
+.current-notification>div{display:flex;align-items:center;gap:8px;min-width:0}
 .current-notification small{color:var(--muted)}
+#notificationTime{margin-right:8px;opacity:.8;white-space:nowrap}
+#notificationText{min-width:0}
 .header-connection-status{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:10px;letter-spacing:.08em}
 .action-row{display:flex;gap:8px;margin:0}
 .action-card{display:flex;align-items:center;gap:8px;min-height:42px;text-align:left;border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.04);color:var(--text);padding:8px 12px}
