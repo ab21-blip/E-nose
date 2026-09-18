@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="id" data-theme="dark" data-ui-theme="default">
+<html lang="id">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#06110b">
+  <meta name="theme-color" content="#0a0e14">
   <meta name="description" content="Maliki Nose serial acquisition console">
   <title>Maliki Nose</title>
   <link rel="stylesheet" href="static/style.css">
@@ -52,7 +52,6 @@
         <span id="headerConnectionStatus" class="header-connection-status"><i id="headerConnectionLamp" class="connection-lamp offline" aria-label="Serial tidak terhubung" title="Serial tidak terhubung"></i><span>OFFLINE</span></span>
         <div id="currentNotification" class="current-notification info"><span id="notificationMark" class="notification-mark">i</span><div><small id="notificationTime">--:--:--</small><strong id="notificationText">System ready.</strong></div></div>
         <button id="aboutButton" class="utility-button about-button" type="button"><span class="about-icon">i</span> ABOUT</button>
-        <div class="appearance-control"><button id="appearanceButton" class="utility-button appearance-button" type="button" aria-expanded="false">◐</button><div id="appearancePopover" class="appearance-popover hidden"><strong>THEME &amp; MODE</strong><button id="appearanceClose" class="appearance-close" type="button">×</button><div class="mode-selector"><button id="darkModeButton" type="button">☾ DARK</button><button id="lightModeButton" type="button">☀ LIGHT</button></div><div class="appearance-section-label">UI THEME</div><div class="theme-option-grid" id="themeOptionGrid"><button class="theme-option" type="button" data-ui-theme-option="default">Maliki Green</button><button class="theme-option" type="button" data-ui-theme-option="minimalist">Minimalist UI</button><button class="theme-option" type="button" data-ui-theme-option="bento">Bento UI</button><button class="theme-option" type="button" data-ui-theme-option="neo-brutalism">Neo-Brutalism</button><button class="theme-option" type="button" data-ui-theme-option="terminal">Terminal / Linux</button><button class="theme-option" type="button" data-ui-theme-option="cyberpunk">Cyberpunk HUD</button><button class="theme-option" type="button" data-ui-theme-option="material">Material 3</button><button class="theme-option" type="button" data-ui-theme-option="editorial">Editorial Pro</button></div></div></div>
         <button id="logoutButton" class="utility-button logout-button" type="button">LOGOUT</button>
       </div></header>
 
@@ -69,13 +68,5 @@
   <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
 
   <script src="static/app.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedTheme = localStorage.getItem("ekDataReaderTheme");
-      const savedUiTheme = localStorage.getItem("ekDataReaderUiTheme");
-      if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
-      if (savedUiTheme) document.documentElement.setAttribute("data-ui-theme", savedUiTheme);
-    });
-  </script>
 </body>
 </html>
