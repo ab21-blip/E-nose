@@ -1,55 +1,3 @@
-/* Minimalist UI - High Contrast Black & White */
-[data-ui-theme="minimalist"]{--bg:#ffffff!important;--panel:#f0f0f0!important;--panel2:#e0e0e0!important;--line:#000000!important;--text:#000000!important;--muted:#444444!important;--lime:#000000!important;--green:#006622!important;--orange:#cc5500!important;--red:#cc0000!important}
-[data-ui-theme="minimalist"] body{font-family:Arial,sans-serif}
-[data-ui-theme="minimalist"] .sidebar{background:#f0f0f0}
-[data-ui-theme="minimalist"] .brand-logo,[data-ui-theme="minimalist"] .login-submit,[data-ui-theme="minimalist"] .brutal-button{background:#000000;color:#ffffff}
-
-/* Bento UI - Warm Light & High Contrast */
-[data-ui-theme="bento"]{--bg:#f9f6f0!important;--panel:#ffffff!important;--panel2:#e3d5ca!important;--line:#2b1e16!important;--text:#1c130d!important;--muted:#544238!important;--lime:#d94e00!important}
-[data-ui-theme="bento"] body{font-family:Arial,sans-serif}
-[data-ui-theme="bento"] .side-panel,[data-ui-theme="bento"] .brutal-card,[data-ui-theme="bento"] .process-board{border-radius:12px;border:2px solid var(--line)}
-
-/* Neo-Brutalism - Vibrant Yellow & Thick Outlines */
-[data-ui-theme="neo-brutalism"]{--bg:#ffde59!important;--panel:#ffffff!important;--panel2:#ff914d!important;--line:#000000!important;--text:#000000!important;--muted:#222222!important;--lime:#ff3131!important;--green:#00bf63!important}
-[data-ui-theme="neo-brutalism"] body{font-family:Arial,sans-serif}
-[data-ui-theme="neo-brutalism"] .side-panel,[data-ui-theme="neo-brutalism"] .brutal-card,[data-ui-theme="neo-brutalism"] .process-board,[data-ui-theme="neo-brutalism"] .action-card{border:3px solid #000000;box-shadow:5px 5px 0 #000000}
-[data-ui-theme="neo-brutalism"] .brand-logo,[data-ui-theme="neo-brutalism"] .login-submit,[data-ui-theme="neo-brutalism"] .brutal-button{background:#ff3131;color:#ffffff;border:3px solid #000000}
-
-/* Terminal / Linux - Neon Green on Pitch Black */
-[data-ui-theme="terminal"]{--bg:#000000!important;--panel:#0a0a0a!important;--panel2:#141414!important;--line:#00ff00!important;--text:#00ff00!important;--muted:#00b300!important;--lime:#ccff00!important;--green:#00ff00!important}
-[data-ui-theme="terminal"] body{font-family:"Courier New",monospace}
-[data-ui-theme="terminal"] h1,[data-ui-theme="terminal"] h2,[data-ui-theme="terminal"] h3{font-family:"Courier New",monospace}
-
-/* Cyberpunk HUD - Electric Cyan & Magenta */
-[data-ui-theme="cyberpunk"]{--bg:#080014!important;--panel:#12002b!important;--panel2:#240054!important;--line:#00f0ff!important;--text:#ffffff!important;--muted:#b899ff!important;--lime:#ff007f!important;--green:#00ff66!important;--orange:#ff9900!important;--red:#ff0033!important}
-[data-ui-theme="cyberpunk"] body{font-family:Arial,sans-serif}
-[data-ui-theme="cyberpunk"] .side-panel,[data-ui-theme="cyberpunk"] .brutal-card,[data-ui-theme="cyberpunk"] .process-board{box-shadow:0 0 12px #00f0ff}
-
-/* Material 3 - Clean High Contrast Blue */
-[data-ui-theme="material"]{--bg:#f0f4f9!important;--panel:#ffffff!important;--panel2:#dbe4f0!important;--line:#1b365d!important;--text:#0b1d33!important;--muted:#42526e!important;--lime:#0052cc!important;--green:#00875a!important}
-[data-ui-theme="material"] body{font-family:Arial,sans-serif}
-[data-ui-theme="material"] .side-panel,[data-ui-theme="material"] .brutal-card,[data-ui-theme="material"] .process-board,[data-ui-theme="material"] .action-card{border-radius:12px}
-[data-ui-theme="material"] .brand-logo,[data-ui-theme="material"] .login-submit,[data-ui-theme="material"] .brutal-button{background:#0052cc;color:#ffffff;border-radius:20px}
-
-/* Editorial Pro - Warm Cream & Deep Crimson */
-[data-ui-theme="editorial"]{--bg:#f4efe6!important;--panel:#ffffff!important;--panel2:#e6dacb!important;--line:#2a2421!important;--text:#1c1816!important;--muted:#594f49!important;--lime:#a62b1e!important;--green:#2d5a43!important}
-[data-ui-theme="editorial"] body{font-family:Georgia,serif}
-[data-ui-theme="editorial"] h1,[data-ui-theme="editorial"] h2,[data-ui-theme="editorial"] h3{font-family:Georgia,serif}
-[data-ui-theme="editorial"] .sidebar{background:#e6dacb}
-
-/* Global Light Mode Overrides */
-[data-theme="light"]{--bg:#f4f7f2!important;--panel:#ffffff!important;--panel2:#e8f1e8!important;--line:#a9c2ad!important;--text:#17301f!important;--muted:#587060!important;--lime:#6a9f19!important;--green:#25834d!important;--orange:#bd5b22!important;--red:#c23c3c!important}
-[data-theme="light"] body{background:var(--bg);color:var(--text)}
-[data-theme="light"] .sidebar{background:#e8f1e8}
-[data-theme="light"] .device-box,[data-theme="light"] .sample-name-input,[data-theme="light"] .setting-control{background:#f4f8f4;color:var(--text)}
-[data-theme="light"] .progress-outer{background:#dce9dc}
-[data-theme="light"] .cat-panel{background:#e8f1e8}
-[data-theme="light"] .login-screen{background:radial-gradient(circle at 50% 20%,#dcebd7 0,#f4f7f2 55%)}
-[data-theme="light"] .login-window{box-shadow:0 20px 80px #49634a33}
-[data-theme="light"] .table-wrapper th,[data-theme="light"] .table-wrapper td{border-bottom-color:#d7e5d8}
-[data-theme="light"] .stat-row{border-bottom-color:#d7e5d8}
-[data-theme="light"] .card-buttons button,[data-theme="light"] .button-link,[data-theme="light"] .utility-button{background:#fff;color:var(--text)}
-
 /* Common Base Styles */
 :root{--bg:#0a0e14;--panel:#131922;--panel2:#182230;--line:#1e2836;--text:#e2e8f0;--muted:#64748b;--lime:#00f2ff;--green:#10b981;--orange:#f59e0b;--red:#ef4444;--purple:#8b5cf6;--font-mono:'JetBrains Mono','Fira Code','DM Mono','Consolas',monospace}
 *{box-sizing:border-box}
@@ -219,14 +167,5 @@ button:disabled, .action-card:disabled {opacity:0.4 !important;cursor:not-allowe
 .toast.success{border-color:var(--green)}
 .toast.warning{border-color:var(--orange)}
 .toast.error{border-color:var(--red)}
-.appearance-control{position:relative}
-.appearance-popover{position:absolute;top:calc(100% + 10px);right:0;z-index:20;display:grid;gap:10px;min-width:280px;padding:16px;border:1px solid var(--line);background:var(--panel);color:var(--text);box-shadow:0 14px 35px #0008}
-.appearance-popover>strong{color:var(--lime);font-size:11px;letter-spacing:.08em}
-.appearance-close{position:absolute;top:8px;right:8px;padding:2px 7px!important;border:1px solid var(--line)!important;background:transparent!important;color:var(--text)!important}
-.mode-selector,.theme-option-grid{display:flex;flex-wrap:wrap;gap:6px}
-.appearance-popover button{padding:7px 9px;border:1px solid var(--line);background:transparent;color:var(--text);font-size:11px}
-.appearance-popover button:hover{border-color:var(--lime);color:var(--lime)}
-.appearance-section-label{margin-top:2px;color:var(--muted);font-size:10px;letter-spacing:.1em}
-
 @media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{border-right:0}.main-area{padding:0}.action-row{flex-wrap:wrap}.action-card{flex:1 1 150px}}
 @media(max-width:600px){.login-content{grid-template-columns:1fr}.cat-panel{min-height:180px;border-right:0;border-bottom:1px solid var(--line)}.login-form-panel{padding:28px}.action-row{display:grid;grid-template-columns:1fr}.app-header{display:block}.header-right{margin-top:18px}.chart-wrapper{height:280px}}
