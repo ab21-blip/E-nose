@@ -444,16 +444,6 @@ function exportCSV() {
   notice(`Data berhasil diekspor ke ${filename}`, "success");
 }
 
-function setTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  localStorage.setItem("ekDataReaderTheme", theme);
-}
-
-function setUiTheme(theme) {
-  document.documentElement.setAttribute("data-ui-theme", theme);
-  localStorage.setItem("ekDataReaderUiTheme", theme);
-}
-
 function unlock() {
   document.body.classList.remove("is-locked");
   $("loginScreen").classList.add("hidden");
@@ -568,19 +558,6 @@ $("chartModal").addEventListener("click", event => {
 });
 $("aboutButton").addEventListener("click", () => $("aboutModal").classList.remove("hidden"));
 $("aboutClose").addEventListener("click", () => $("aboutModal").classList.add("hidden"));
-
-$("appearanceButton")?.addEventListener("click", () => $("appearancePopover")?.classList.toggle("hidden"));
-$("appearanceClose")?.addEventListener("click", () => $("appearancePopover")?.classList.add("hidden"));
-$("darkModeButton")?.addEventListener("click", () => setTheme("dark"));
-$("lightModeButton")?.addEventListener("click", () => setTheme("light"));
-
-$("themeOptionGrid")?.addEventListener("click", e => {
-  const option = e.target.closest("[data-ui-theme-option]");
-  if (option) {
-    setUiTheme(option.getAttribute("data-ui-theme-option"));
-    $("appearancePopover")?.classList.add("hidden");
-  }
-});
 
 ["injectionSeconds", "arrayCount"].forEach(id => $(id)?.addEventListener("input", settings));
 $("sampleName")?.addEventListener("input", updateFileNamePreview);
