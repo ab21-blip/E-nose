@@ -160,14 +160,37 @@ button:disabled, .action-card:disabled {opacity:0.4 !important;cursor:not-allowe
 }
 
 .chart-modal-panel {
+  position: relative;
   width: min(1100px, 95vw);
   max-height: 90vh;
   background: var(--panel);
   border: 1px solid var(--lime);
-  padding: 20px;
+  padding: 24px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  padding: 6px 12px;
+  border: 1px solid var(--lime);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--lime);
+  font-family: monospace;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-modal-btn:hover {
+  background: var(--lime);
+  color: #000;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
 }
 
 .expanded-chart-wrapper {
