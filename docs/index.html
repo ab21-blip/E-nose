@@ -48,10 +48,8 @@
 
     <main class="main-area">
       <header class="app-header"><div><p class="header-kicker">MALIKI NOSE / SERIAL READER</p><h2>DATA ACQUISITION WORKSPACE</h2></div><section class="action-row" aria-label="Kontrol akuisisi"><button id="samplingButton" class="action-card" type="button" disabled><span class="action-number">01</span><span><strong>SAMPLING</strong><small>One acquisition cycle</small></span></button><button id="arrayButton" class="action-card" type="button" disabled><span class="action-number">02</span><span><strong>ARRAY SAMPLING</strong><small>Automatic acquisition cycles</small></span></button><button id="cleanButton" class="action-card" type="button" disabled><span class="action-number">03</span><span><strong>CLEAN</strong><small>Start cleaning</small></span></button><button id="stopButton" class="action-card danger" type="button" disabled><span class="action-number">■</span><span><strong>STOP</strong><small>Stop active process</small></span></button></section><div class="header-right">
-        <span id="headerConnectionStatus" class="header-connection-status"><i id="headerConnectionLamp" class="connection-lamp offline" aria-label="Serial tidak terhubung" title="Serial tidak terhubung"></i><span>OFFLINE</span></span>
-        <div id="currentNotification" class="current-notification info"><span id="notificationMark" class="notification-mark">i</span><div><small id="notificationTime">--:--:--</small><strong id="notificationText">System ready.</strong></div></div>
-        <button id="aboutButton" class="utility-button about-button" type="button"><span class="about-icon">i</span> ABOUT</button>
-        <button id="logoutButton" class="utility-button logout-button" type="button">LOGOUT</button>
+        <div class="header-status-bar"><span id="headerConnectionStatus" class="header-connection-status"><i id="headerConnectionLamp" class="connection-lamp offline" aria-label="Serial tidak terhubung" title="Serial tidak terhubung"></i><span>OFFLINE</span></span><div id="currentNotification" class="current-notification info"><span id="notificationMark" class="notification-mark">i</span><small id="notificationTime">--:--:--</small><strong id="notificationText">System ready.</strong></div></div>
+        <div class="header-action-bar"><button id="aboutButton" class="utility-button about-button" type="button"><span class="about-icon">i</span> ABOUT</button><button id="logoutButton" class="utility-button logout-button" type="button">LOGOUT</button></div>
       </div></header>
 
       <section class="content-stack">
