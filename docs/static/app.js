@@ -25,6 +25,30 @@ function timeNow() {
   return new Date().toLocaleTimeString("id-ID", { hour12: false });
 }
 
+function startHeaderClock() {
+  const clock = $("loginClock");
+  if (!clock) return;
+
+  const updateClock = () => {
+    const now = new Date();
+    const date = now.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
+    const time = now.toLocaleTimeString("id-ID", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    });
+    clock.textContent = `${date}, ${time}`;
+  };
+
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
 function notice(message, type = "info") {
   const box = $("currentNotification");
   if (box) {
@@ -523,6 +547,7 @@ $("themeOptionGrid")?.addEventListener("click", e => {
 $("sampleName")?.addEventListener("input", updateFileNamePreview);
 
 window.addEventListener("DOMContentLoaded", () => {
+  startHeaderClock();
   chart = makeChart($("sensorChart"));
   legend();
   settings();
