@@ -88,7 +88,6 @@ button:disabled, .action-card:disabled {opacity:0.4 !important;cursor:not-allowe
 .cat-panel p{margin:18px 0 4px;color:var(--lime);font-weight:700;letter-spacing:.14em}
 .cat-panel small{color:var(--muted)}
 .login-form-panel{padding:55px}
-.terminal-command{color:var(--lime);font-size:11px}
 .login-form-panel h1{font:700 32px Manrope,Arial,sans-serif}
 .login-copy{color:var(--muted)}
 .login-form-panel form{display:grid;gap:10px;margin-top:30px}
