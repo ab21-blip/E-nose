@@ -159,6 +159,14 @@ button:disabled, .action-card:disabled {opacity:0.4 !important;cursor:not-allowe
   width: 100%;
 }
 .modal-panel>button{position:absolute;right:12px;top:8px;border:0;background:transparent;color:var(--text);font-size:20px}
+.about-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);z-index:1000}
+.modal-panel-sm{width:min(420px,90vw);padding:20px;border:1px solid var(--lime);border-radius:8px;background:var(--panel);color:var(--text);font-family:var(--font-mono)}
+.about-logo{margin-top:10px;color:var(--lime);font-size:20px;font-weight:700}
+.about-desc{margin:8px 0 16px;color:var(--muted);font-size:12px;line-height:1.4}
+.about-spec{display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px dashed var(--line);font-size:12px}
+.about-spec div{display:flex;justify-content:space-between;gap:16px}
+.about-spec span{color:var(--muted)}
+.about-spec strong{text-align:right;color:var(--text)}
 .chart-modal-panel{width:min(1100px,calc(100% - 30px))}
 .chart-modal-panel canvas{height:min(500px,70vh)!important;max-height:70vh;width:100%!important}
 .toast-region{position:fixed;right:20px;bottom:20px;z-index:1100;display:grid;gap:8px;width:min(360px,calc(100vw - 40px));pointer-events:none}
