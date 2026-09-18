@@ -528,6 +528,7 @@ window.addEventListener("DOMContentLoaded", () => {
   settings();
   updateFileNamePreview();
   controls();
+  notice("Aplikasi siap. Silakan hubungkan perangkat serial.", "info");
   if (sessionStorage.getItem("malikiUnlocked") === "1") unlock();
   if (!("serial" in navigator)) notice("Web Serial is unavailable in this browser.", "warning");
 });
