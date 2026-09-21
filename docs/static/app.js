@@ -286,7 +286,8 @@ async function connect() {
     return;
   }
   try {
-    serialPort = await navigator.serial.requestPort();
+    // Lewatkan opsi filters secara eksplisit dengan array kosong agar Chromium menampilkan seluruh jenis port serial (termasuk GPIO UART)
+    serialPort = await navigator.serial.requestPort({ filters: APP.FILTERS });
     await serialPort.open({ baudRate: APP.BAUD_RATE, dataBits: 8, stopBits: 1, parity: "none", flowControl: "none" });
     connected = true;
     serialReady = false;
