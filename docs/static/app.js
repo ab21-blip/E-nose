@@ -286,7 +286,7 @@ async function connect() {
     return;
   }
   try {
-    serialPort = await navigator.serial.requestPort({ filters: APP.FILTERS });
+    serialPort = await navigator.serial.requestPort();
     await serialPort.open({ baudRate: APP.BAUD_RATE, dataBits: 8, stopBits: 1, parity: "none", flowControl: "none" });
     connected = true;
     serialReady = false;
