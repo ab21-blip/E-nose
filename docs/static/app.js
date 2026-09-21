@@ -293,14 +293,16 @@ async function connect() {
     return;
   }
   try {
-    serialPort = await navigator.serial.requestPort({ filters: APP.FILTERS });
+    // Allow Chromium to enumerate all serial devices, including internal Raspberry Pi UART
+    // ports such as /dev/ttyAMA0 and /dev/ttyS0, not only USB vendor-filtered adapters.
+    serialPort = await navigator.serial.requestPort();
     await serialPort.open({ baudRate: APP.BAUD_RATE, dataBits: 8, stopBits: 1, parity: "none", flowControl: "none" });
     connected = true;
     serialReady = false;
     updateConnectionIndicator(true);
     $("connectionLamp").classList.add("online");
     $("connectionLamp").classList.remove("offline");
-    $("deviceName").textContent = "UART GPIO / CH340 / FTDI SERIAL";
+    $("deviceName").textContent = "UART GPIO / USB SERIAL";
     $("connectionNote").textContent = "Serial connected · 9600 baud";
     controls();
     notice("Perangkat tersambung. Menyiapkan serial...", "info");
@@ -337,7 +339,7 @@ async function disconnect() {
   $("connectionLamp").classList.remove("online");
   $("connectionLamp").classList.add("offline");
   $("deviceName").textContent = "SERIAL DEVICE NOT CONNECTED";
-  $("connectionNote").textContent = "Pilih port serial internal atau USB.";
+  $("connectionNote").textContent = "Pilih perangkat UART GPIO atau USB serial.";
   processPhase("READY");
   controls();
   notice("Serial device disconnected.", "warning");
