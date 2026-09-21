@@ -6,7 +6,7 @@ const APP = {
   SAMPLE_RATE_HZ: 4,
   SAMPLE_INTERVAL_MS: 250,
   MAX_CHART_POINTS: 100,
-  FILTERS: [{ usbVendorId: 0x1a86 }, { usbVendorId: 0x0403 }]
+  FILTERS: [] // Kosongkan filter agar port UART GPIO /dev/ttyAMA0 / dev/ttyS0 bisa terbaca
 };
 
 const names = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "Temp", "Hum"];
