@@ -6,7 +6,7 @@ const APP = {
   SAMPLE_RATE_HZ: 4,
   SAMPLE_INTERVAL_MS: 250,
   MAX_CHART_POINTS: 100,
-  FILTERS: [] // Kosongkan filter agar port UART GPIO /dev/ttyAMA0 / dev/ttyS0 bisa terbaca
+  FILTERS: [] // Dibiarkan kosong agar port UART GPIO /dev/ttyAMA0 / dev/ttyS0 terdeteksi
 };
 
 const names = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "Temp", "Hum"];
@@ -159,8 +159,7 @@ function table(reading) {
 
 function controls() {
   const ready = connected && serialReady && !processRunning;
-  ["samplingButton", "arrayButton", "cleanButton"].forEach(id => $(id).disabled = !ready);
-  $("stopButton").disabled = !processRunning;
+  ["samplingButton", "arrayButton", "cleanButton"].forEach(id => $(id).disabled = !ready);$("stopButton").disabled = !processRunning;
   $("connectButton").disabled = processRunning;
   $("connectButton").textContent = connected ? "DISCONNECT" : "CONNECT";
   $("connectButton").classList.toggle("disconnect", connected);
@@ -219,14 +218,20 @@ function resetProgress() {
   $("sampleTargetText").textContent = "0 / 0 samples";
 }
 
+// PERBAIKAN PARSING DATA SERIAL UNTUK GRAFIK
 function parseLine(line) {
-  const values = String(line).trim().split(/[;,\t ]+/).map(Number);
+  const cleanLine = String(line).replace(/[^\d.,; \t-]/g, "").trim();
+  if (!cleanLine) return null;
+
+  const values = cleanLine.split(/[;,\t ]+/).map(Number);
   if (!values.length || values.some(v => !Number.isFinite(v))) return null;
+
   const schema = values.length === 8
     ? ["S1", "S2", "S3", "S4", "S5", "S6", "Temp", "Hum"]
     : values.length === 12
       ? ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "Temp", "Hum"]
       : values.map((_, index) => index < values.length - 2 ? `S${index + 1}` : index === values.length - 2 ? "Temp" : "Hum");
+  
   const data = {};
   schema.forEach((key, i) => data[key] = values[i]);
   return data;
@@ -248,6 +253,7 @@ async function serialLoop(port) {
       buffer = lines.pop() || "";
       
       lines.forEach(line => {
+        console.log("Raw Serial Line:", line); // Cek data masuk di F12 Console
         const values = parseLine(line);
         if (!values) return;
         
@@ -276,6 +282,7 @@ async function serialLoop(port) {
   }
 }
 
+// PERBAIKAN UTAMA DI FUNGSI CONNECT (LEWATKAN APP.FILTERS SECARA EKSPLISIT)
 async function connect() {
   if (connected) {
     await disconnect();
@@ -286,7 +293,6 @@ async function connect() {
     return;
   }
   try {
-    // Lewatkan opsi filters secara eksplisit dengan array kosong agar Chromium menampilkan seluruh jenis port serial (termasuk GPIO UART)
     serialPort = await navigator.serial.requestPort({ filters: APP.FILTERS });
     await serialPort.open({ baudRate: APP.BAUD_RATE, dataBits: 8, stopBits: 1, parity: "none", flowControl: "none" });
     connected = true;
@@ -294,7 +300,7 @@ async function connect() {
     updateConnectionIndicator(true);
     $("connectionLamp").classList.add("online");
     $("connectionLamp").classList.remove("offline");
-    $("deviceName").textContent = "CH340 / CH341 / FTDI SERIAL";
+    $("deviceName").textContent = "UART GPIO / CH340 / FTDI SERIAL";
     $("connectionNote").textContent = "Serial connected · 9600 baud";
     controls();
     notice("Perangkat tersambung. Menyiapkan serial...", "info");
@@ -331,7 +337,7 @@ async function disconnect() {
   $("connectionLamp").classList.remove("online");
   $("connectionLamp").classList.add("offline");
   $("deviceName").textContent = "SERIAL DEVICE NOT CONNECTED";
-  $("connectionNote").textContent = "Pilih perangkat CH340/CH341 atau FTDI.";
+  $("connectionNote").textContent = "Pilih port serial internal atau USB.";
   processPhase("READY");
   controls();
   notice("Serial device disconnected.", "warning");
@@ -543,7 +549,6 @@ $("adaptiveYToggle").addEventListener("change", e => {
 $("expandChartButton").addEventListener("click", () => {
   $("chartModal").classList.remove("hidden");
 
-  // Beri sedikit jeda agar DOM modal selesai dirender sebelum chart dibuat/di-resize
   setTimeout(() => {
     if (!expandedChart) {
       expandedChart = makeChart($("expandedSensorChart"));
