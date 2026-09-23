@@ -1,0 +1,65 @@
+Oalah, paham! Maksud kamu mau baca data serialnya **langsung dari pin GPIO** (UART TX/RX) di Raspberry Pi, bukan lewat port USB.
+
+**Bisa banget!** Raspberry Pi punya pin UART bawaan di header GPIO:
+
+* **Pin 8 (GPIO 14)** = TX
+* **Pin 10 (GPIO 15)** = RX
+* **Pin 6** = GND
+
+Supaya aplikasi web ini bisa langsung baca dari pin GPIO tersebut, ada **2 tahap** yang wajib dilakukan:
+
+---
+
+### Step 1: Aktifkan UART di Raspberry Pi
+
+Secara *default*, pin UART di GPIO dipakai oleh sistem sebagai *Serial Console*. Ini harus dimatikan dulu agar bisa dipakai oleh aplikasi.
+
+1. Buka terminal di Raspberry Pi, lalu ketik:
+```bash
+sudo raspi-config
+
+```
+
+
+2. Pilih **Interface Options** $\rightarrow$ **Serial Port**.
+3. Pilih **NO** saat ditanya *"Would you like a login shell to be accessible over serial?"*.
+4. Pilih **YES** saat ditanya *"Would you like the serial port hardware to be enabled?"*.
+5. Keluar dan **reboot** Raspberry Pi (`sudo reboot`).
+
+---
+
+### Step 2: Sesuaikan Kode JavaScript (`app.js`)
+
+Web Serial API di browser juga bisa mendeteksi UART bawaan (`/dev/ttyAMA0` atau `/dev/ttyS0`).
+
+Agar tombol **CONNECT** tidak menyaring (*filter*) port hanya untuk perangkat USB, ganti konfigurasi `FILTERS` di bagian paling atas file `app.js`:
+
+```javascript
+// Ganti bagian ini di app.js
+const APP = {
+	PASSWORD: "vivafisika",
+	BAUD_RATE: 9600,
+	SAMPLE_RATE_HZ: 4,
+	SAMPLE_INTERVAL_MS: 250,
+	MAX_CHART_POINTS: 100,
+	FILTERS: [] // Kosongkan filter agar port UART GPIO /dev/ttyAMA0 / dev/ttyS0 bisa terbaca
+};
+
+```
+
+Dan pastikan fungsi `connect()` memanggil tanpa parameter filter:
+
+```javascript
+// Di dalam fungsi connect(), ubah panggilan requestPort:
+serialPort = await navigator.serial.requestPort();
+
+```
+
+---
+
+### ⚠️ Catatan Penting Soal Tegangan (Voltage Level)!
+
+Pin GPIO Raspberry Pi **bekerja pada tegangan 3.3V**.
+
+* Jika mikrokontroler/sensor kamu keluaran tegangannya **3.3V** (seperti ESP32 atau STM32), bisa langsung dicolok ke pin RX/TX Raspberry Pi.
+* Jika mikrokontroler kamu keluaran tegangannya **5V** (seperti Arduino UNO / Nano), **WAJIB pakai Logic Level Converter** di jalur RX-TX. Kalau dicolok langsung 5V ke GPIO Raspberry Pi, pin GPIO-nya bisa rusak.
